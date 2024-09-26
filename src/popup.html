@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/popup.css">
+    <script type="module" src="popup.js"></script>
+</head>
+<body>
+    <div class="container">
+        <p class="title"></p>
+        <div class="ctrls">
+            <button class="btn btn-sm btn-primary" id="btnAuth">登录</button>
+            <button class="btn btn-sm btn-primary" id="btnResetFailed">失败重传</button>
+            <button class="btn btn-sm btn-primary" id="btnCleanHistory">清除历史记录</button>
+            <!-- <button class="btn btn-sm btn-warning" id="btnDownloadUpdate">下载新版</button> -->
+        </div>
+        <p class="messages">
+            <span class="">待上传：<span class="text-primary" id="pms-pending"></span></span>
+            <span class="">已采集：<span class="text-success" id="pms-finished"></span></span>
+            <span class="">失败：<span class="text-success" id="pms-failed"></span></span>
+        </p>
+        <div id="debug"></div>
+    </div>
+</body>
+</html>

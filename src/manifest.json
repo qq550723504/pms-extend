@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "翠特PMS采集器",
+  "version": "2.0.0",
+  "description": "从速卖通采集产品信息到翠特PMS系统",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*.aliexpress.com/*",
+    "https://pms.sentaixin.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "19": "images/logo-19.png",
+      "64": "images/logo-64.png",
+      "128": "images/logo-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.aliexpress.com/*"],
+      "js": ["content-script.js"],
+      "type": "module"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "images/*",
+        "content.js",
+        "shared.js",
+        "modules/*",
+        "utils/*"
+      ],
+      "matches": ["https://*.aliexpress.com/*"]
+    }
+  ]
+}
