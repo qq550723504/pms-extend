@@ -3,6 +3,7 @@ import { cache } from './modules/cache.js';
 import { storage } from './modules/storage.js';
 import { queue } from './modules/queue.js';
 import { capture } from './modules/capture.js';
+import { parser } from './modules/parser.js';
 
 export const pms = {
   config,
@@ -10,4 +11,5 @@ export const pms = {
   storage,
   queue,
   capture,
+  parser,
 };

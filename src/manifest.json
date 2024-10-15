@@ -11,7 +11,7 @@
     "alarms"
   ],
   "host_permissions": [
-    "https://*.aliexpress.com/*",
+    "https://*.aliexpress.com/item/*",
     "https://pms.sentaixin.com/*"
   ],
   "action": {

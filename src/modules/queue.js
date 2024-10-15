@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger.js';
 import { cache } from './cache.js';
 import { parser } from './parser.js';
+import { config } from './config.js';
 
 export const queue = {
   RUNNING: "running",
@@ -79,13 +80,15 @@ export const queue = {
   sendDataToServer: async function (data) {
     try {
       // 这里应该包含实际发送数据到服务器的逻辑
-      const response = await fetch(pms.config.gather.url.postProductApi, {
+      const response = await fetch(config.URLS.POST_PRODUCT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
+
+      logger.info('发送数据到服务器的响应:', response);
 
       if (!response.ok) {
         throw new Error('服务器响应不成功');

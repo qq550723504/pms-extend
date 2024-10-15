@@ -23,13 +23,11 @@ export function main() {
       if (!parsedResult.success) {
         throw new Error(parsedResult.error || "数据解析失败");
       }
-
       // 发送采集数据到后台脚本
       const response = await chrome.runtime.sendMessage({
         action: pms.config.MESSAGE_ACTIONS.CAPTURE_AND_SEND_DATA,
         data: parsedResult.data,
       });
-
       if (response.success) {
         logger.info("数据采集成功");
         updateButtonState("gathered");

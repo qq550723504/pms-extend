@@ -3,11 +3,11 @@ import { cleanText } from '../utils/textUtils.js';
 import { getDomain } from '../utils/urlutils.js';
 
 export const parser = {
-  parsePageData: function(rawData) {
+  parsePageData: function (rawData) {
     try {
       const domain = getDomain(rawData.url);
       const parseMethod = this.getParseMethod(domain);
-      
+
       if (!parseMethod) {
         throw new Error(`不支持的域名: ${domain}`);
       }
@@ -20,42 +20,60 @@ export const parser = {
     }
   },
 
-  getParseMethod: function(domain) {
+  getParseMethod: function (domain) {
     const parseMethods = {
-      'aliexpress.com': this.parseAliexpress,
-      'amazon.com': this.parseAmazon,
-      'ebay.com': this.parseEbay,
+      'www.aliexpress.com': this.parseAliexpress,
+      'www.amazon.com': this.parseAmazon,
+      'www.ebay.com': this.parseEbay,
       // 可以添加更多网站的解析方法
     };
 
     return parseMethods[domain];
   },
 
-  parseAliexpress: function(rawData) {
+  parseAliexpress: function (rawData) {
     // 实现 Aliexpress 特定的解析逻辑
     return {
+      id: rawData.id,
       url: rawData.url,
       title: rawData.title,
-      price: rawData.price,
+      price: {
+        price: rawData.price.match(/\d+(\.\d+)?/)[0],
+        currency: rawData.currency,
+      },
       description: rawData.description,
       images: rawData.images,
-      specifications: rawData.specifications
+      specifications: rawData.specifications.map(spec => {
+        return {
+          name: spec.key,
+          value: spec.value
+        }
+      }),
+      variants: rawData.skus.map(sku => {
+        return {
+          attrs: sku.name,
+          currency: rawData.currency,
+          price: sku.price.match(/\d+(\.\d+)?/)[0],
+          stock: 999
+        }
+      }),
+      createdAt: new Date().toISOString(),
+      stock: 999
     };
   },
 
-  parseAmazon: function(rawData) {
+  parseAmazon: function (rawData) {
     // 实现 Amazon 特定的解析逻辑
     return {
       url: rawData.url,
       title: rawData.title,
       price: rawData.price,
       description: rawData.description,
-      images: rawData.images,
-      specifications: rawData.specifications
+      images: rawData.images
     };
   },
 
-  parseEbay: function(rawData) {
+  parseEbay: function (rawData) {
     // 实现 eBay 特定的解析逻辑
     return {
       url: rawData.url,

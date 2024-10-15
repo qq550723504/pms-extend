@@ -35,13 +35,51 @@ export const capture = {
   },
 
   captureAliexpress: async function(url) {
+    // 等待 JSON-LD 脚本加载
+    await this.waitForElement('script[type="application/ld+json"]');
+    // 获取并解析 JSON-LD 数据
+    const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+    const jsonLdData = JSON.parse(jsonLdScript.textContent)[0];  // 假设我们只关心第一个对象
+    const skuItemElement = await this.waitForElement('.sku-item--skus--StEhULs');
+    const skuItems = skuItemElement.querySelectorAll('.sku-item--image--jMUnnGA');
+    const descriptionElement = await this.waitForElement('#nav-description');
+    const description = descriptionElement.querySelector("#product-description");
+    const specificationElement = await this.waitForElement('.specification--list--GZuXzRX');
+    const specificationMoreButton = await this.waitForElement('.specification--btn--Y4pYc4b');
+    await specificationMoreButton.click();
+    const specificationItems = specificationElement.querySelectorAll('.specification--prop--Jh28bKu');
+    const skus = [];
+    for (const skuItem of skuItems) {
+        const sku = {};
+        sku.name = skuItem.querySelector('img').alt;
+        //点击每一个skuItem
+        skuItem.click();
+        //等待价格加载完毕
+        const priceElement = await this.waitForElement('.product-price-value');
+        sku.price = priceElement.textContent;
+        skus.push(sku);
+    }
+    const specifications = [];
+    for(const specification of specificationItems){
+      const key = specification.querySelector('.specification--title--SfH3sA8').textContent;
+      const value = specification.querySelector('.specification--desc--Dxx6W0W').textContent;
+      specifications.push({key, value});
+    }
+    const imageElements = document.querySelectorAll('.slider--img--K0YbWW2 img');
+    const images = [];
+    for (const imageElement of imageElements) {
+      images.push(this.removeAfterFirstJpg(imageElement.src));
+    }
     return {
-      url: url,
-      titleElement: await this.waitForElement('h1'),
-      priceElement: await this.waitForElement('.product-price-value'),
-      descriptionElement: await this.waitForElement('.product-description'),
-      imageElements: document.querySelectorAll('.product-image'),
-      specificationElements: document.querySelectorAll('.specification-item')
+      url: jsonLdData.offers.url,
+      id: jsonLdData.offers.url.match(/\/(\d+)\.html$/)[1],
+      title: jsonLdData.name,
+      price: jsonLdData.offers.price,
+      currency: jsonLdData.offers.priceCurrency,
+      images: images,
+      description: description,
+      skus: skus,
+      specifications: specifications
     };
   },
 
@@ -84,5 +122,12 @@ export const capture = {
       };
       checkElement();
     });
+  },
+  removeAfterFirstJpg:function (url) {
+    const index = url.indexOf('.jpg');
+    if (index !== -1) {
+        return url.slice(0, index + 4); // +4是为了包括“.jpg”
+    }
+    return url; // 如果没有找到“.jpg”，返回原字符串
   }
 };

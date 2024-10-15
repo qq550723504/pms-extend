@@ -26,10 +26,10 @@ const messageHandlers = {
         method: 'GET',
         credentials: 'include'
       });
-      
+      logger.info('检查登录状态成功:', response);
       if (response.ok) {
         const data = await response.json();
-        return { success: data.success };
+        return { success: data.result.token !== null && data.result.token !== '' && data.result.token.length > 0 };
       } else {
         throw new Error('检查登录状态失败');
       }
@@ -40,8 +40,9 @@ const messageHandlers = {
   },
   [pms.config.MESSAGE_ACTIONS.CAPTURE_AND_SEND_DATA]: async (request) => {
     try {
+      logger.info('开始发送采集的数据...');
       // 这里应该包含将数据发送到服务器的逻辑
-      const result = await pms.queue.captureAndSendData(request.data);
+      const result = await pms.queue.sendDataToServer(request.data);
       return { success: true, data: result };
     } catch (error) {
       logger.error('发送采集数据时出错:', error);
