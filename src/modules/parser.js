@@ -35,30 +35,30 @@ export const parser = {
     // 实现 Aliexpress 特定的解析逻辑
     return {
       id: rawData.id,
+      source: 'aliexpress',
       url: rawData.url,
       title: rawData.title,
+      stock: 999,
+      unit: 'pcs',
+      shortDescription: rawData.shortDescription,
+      description: rawData.description,
       price: {
         price: rawData.price.match(/\d+(\.\d+)?/)[0],
         currency: rawData.currency,
       },
-      description: rawData.description,
+      package: {
+        unit: 'pcs',
+        weight: 1,
+      },
+      store: {
+        name: rawData.storeName,
+        link: rawData.storeLink,
+        address: rawData.storeAddress
+      },
       images: rawData.images,
-      specifications: rawData.specifications.map(spec => {
-        return {
-          name: spec.key,
-          value: spec.value
-        }
-      }),
-      variants: rawData.skus.map(sku => {
-        return {
-          attrs: sku.name,
-          currency: rawData.currency,
-          price: sku.price.match(/\d+(\.\d+)?/)[0],
-          stock: 999
-        }
-      }),
-      createdAt: new Date().toISOString(),
-      stock: 999
+      //attributes: rawData.skus,
+      specifications: rawData.specifications,
+      //variants: rawData.skus
     };
   },
 

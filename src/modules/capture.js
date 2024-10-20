@@ -43,27 +43,33 @@ export const capture = {
     const skuItemElement = await this.waitForElement('.sku-item--skus--StEhULs');
     const skuItems = skuItemElement.querySelectorAll('.sku-item--image--jMUnnGA');
     const descriptionElement = await this.waitForElement('#nav-description');
-    const description = descriptionElement.querySelector("#product-description");
+    // 模拟鼠标滚轮滚动到descriptionElement
+    descriptionElement.scrollIntoView();
+    const description = await this.waitForElement("#product-description");
     const specificationElement = await this.waitForElement('.specification--list--GZuXzRX');
     const specificationMoreButton = await this.waitForElement('.specification--btn--Y4pYc4b');
     await specificationMoreButton.click();
     const specificationItems = specificationElement.querySelectorAll('.specification--prop--Jh28bKu');
+    const storeNameElement = await this.waitForElement('.store-info--name--E2VWTyv a');
     const skus = [];
     for (const skuItem of skuItems) {
         const sku = {};
-        sku.name = skuItem.querySelector('img').alt;
+        sku.attrs = skuItem.querySelector('img').alt;
         //点击每一个skuItem
         skuItem.click();
         //等待价格加载完毕
         const priceElement = await this.waitForElement('.product-price-value');
-        sku.price = priceElement.textContent;
+        //去掉价格中的$
+        sku.price = priceElement.textContent.replace('$', '');
+        sku.currency = 'USD';
+        sku.availQuantity=999;
         skus.push(sku);
     }
-    const specifications = [];
+    const specifications = {};
     for(const specification of specificationItems){
       const key = specification.querySelector('.specification--title--SfH3sA8').textContent;
       const value = specification.querySelector('.specification--desc--Dxx6W0W').textContent;
-      specifications.push({key, value});
+      specifications[key] = value;
     }
     const imageElements = document.querySelectorAll('.slider--img--K0YbWW2 img');
     const images = [];
@@ -76,8 +82,10 @@ export const capture = {
       title: jsonLdData.name,
       price: jsonLdData.offers.price,
       currency: jsonLdData.offers.priceCurrency,
+      storeName: storeNameElement.textContent,
+      storeLink: storeNameElement.href,
       images: images,
-      description: description,
+      description: description.innerHTML,
       skus: skus,
       specifications: specifications
     };
@@ -116,6 +124,7 @@ export const capture = {
           resolve(element);
         } else if (Date.now() - startTime > timeout) {
           reject(new Error(`等待元素 ${selector} 超时`));
+          location.reload();
         } else {
           setTimeout(checkElement, 100);
         }
