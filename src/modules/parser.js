@@ -45,10 +45,14 @@ export const parser = {
       price: {
         price: rawData.price.match(/\d+(\.\d+)?/)[0],
         currency: rawData.currency,
+        oldPrice: 0,
+        lowPrice: 0,
+        highPrice: 0,
       },
       package: {
         unit: 'pcs',
         weight: 1,
+        size: [0,0,0],
       },
       store: {
         name: rawData.storeName,
@@ -56,9 +60,9 @@ export const parser = {
         address: rawData.storeAddress
       },
       images: rawData.images,
-      //attributes: rawData.skus,
+      //attributes: {},
       specifications: rawData.specifications,
-      //variants: rawData.skus
+      variants: rawData.skus
     };
   },
 

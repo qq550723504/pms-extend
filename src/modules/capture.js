@@ -54,7 +54,8 @@ export const capture = {
     const skus = [];
     for (const skuItem of skuItems) {
         const sku = {};
-        sku.attrs = skuItem.querySelector('img').alt;
+        sku.attrs=[];
+        sku.attrs.push(skuItem.querySelector('img').alt);
         //点击每一个skuItem
         skuItem.click();
         //等待价格加载完毕
@@ -68,7 +69,8 @@ export const capture = {
     const specifications = {};
     for(const specification of specificationItems){
       const key = specification.querySelector('.specification--title--SfH3sA8').textContent;
-      const value = specification.querySelector('.specification--desc--Dxx6W0W').textContent;
+      const value=[];
+      value.push(specification.querySelector('.specification--desc--Dxx6W0W').textContent.replace('&', ''));
       specifications[key] = value;
     }
     const imageElements = document.querySelectorAll('.slider--img--K0YbWW2 img');

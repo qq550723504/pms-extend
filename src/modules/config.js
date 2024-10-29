@@ -40,5 +40,6 @@ export const config = {
     WARN: 1,
     INFO: 2,
     DEBUG: 3
-  }
+  },
+  TOKEN: ''
 };

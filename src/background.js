@@ -1,6 +1,7 @@
 import { pms } from './shared.js';
 import { logger } from './utils/logger.js';
 import { handleError } from './utils/errorhandler.js';
+import { config } from './modules/config.js';
 // 消息处理器
 const messageHandlers = {
   [pms.config.MESSAGE_ACTIONS.GET_CACHE]: async (request) => {
@@ -29,6 +30,7 @@ const messageHandlers = {
       logger.info('检查登录状态成功:', response);
       if (response.ok) {
         const data = await response.json();
+        config.TOKEN = data.result.token;
         return { success: data.result.token !== null && data.result.token !== '' && data.result.token.length > 0 };
       } else {
         throw new Error('检查登录状态失败');

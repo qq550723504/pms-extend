@@ -83,9 +83,10 @@ export const queue = {
       const response = await fetch(config.URLS.POST_PRODUCT, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Authorization': `Bearer ${config.TOKEN}`
         },
-        body: JSON.stringify(data),
+        body: `product=${JSON.stringify(data)}`,
       });
 
       logger.info('发送数据到服务器的响应:', response);
